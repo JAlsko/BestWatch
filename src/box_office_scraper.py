@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
+from movie_utils import *
 import sys
 import re
 
@@ -17,9 +18,3 @@ def getOpeningEarnings(movie_title):
 		amount = search_soup.findAll('td')[15].get_text()
 		#print (amount)
 		return safe_cast((amount.replace('$', '').replace(',','')), int, 0)
-
-def safe_cast(val, to_type, default=None):
-    try:
-        return to_type(val)
-    except (ValueError, TypeError):
-        return default

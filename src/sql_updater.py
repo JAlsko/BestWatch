@@ -14,12 +14,13 @@ cursor.execute('SET collation_connection = \"utf8_general_ci\";')
 def addMovie(mID, original_title, opening_earnings, rotten_tomatoes, imdb_score, metacritic):
 	cursor.execute('INSERT INTO current_movies (id, title, opening_earnings, rotten_tomatoes, imdb_score, metacritic) VALUES (' + 
 		str(mID) + ', \"' +
-		title + '\", ' +
+		original_title + '\", ' +
 		str(opening_earnings) + ', ' +
 		str(rotten_tomatoes) + ', ' +
 		str(imdb_score) + ', ' +
 		str(metacritic) +
 		')')
+	db.commit()
 
 def commitMovies():
 	db.commit()

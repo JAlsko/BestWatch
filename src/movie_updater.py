@@ -20,6 +20,28 @@ def getPlayingMovies(language='en'):
 		if mRes_tmdb['original_language'] != language:
 			continue
 		moviesList.append(m)
+		imdbID = mRes_tmdb['imdb_id']
+		original_title = mRes_tmdb["original_title"]
+		mReq_imdb = requests.get('http://www.omdbapi.com/?i=' + imdbID + '&apikey=' + api_key_imdb)
+		mRes_imdb = mReq_imdb.json()
+		ratings = mRes_imdb['Ratings']
+		#print ('\n' + original_title + ': ', end='')
+		rotten_tomatoes = 0
+		imdb_score = 0
+		metacritic = 0
+		for r in ratings:
+			src = r['Source']
+			val = r['Value']
+			if src == 'Rotten Tomatoes':
+				rotten_tomatoes = safe_cast(val.replace('%',''), int, default=0)
+			elif src == 'Internet Movie Database':
+				imdb_score = safe_cast((val[:val.index('/')]).replace('.',''), int, default=0)
+			elif src == 'Metacritic':
+				metacritic = safe_cast(val[:val.index('/')], int, default=0)
+			#print(r['Source'] + ': ' + r['Value'] + ', ', end='')
+
+		opening_earnings = getOpeningEarnings(original_title)
+		addMovie(mID, original_title, opening_earnings, rotten_tomatoes, imdb_score, metacritic)
 
 def main():
 	nowPlayingReq_tmdb = requests.get('https://api.themoviedb.org/3/movie/now_playing?api_key=' + api_key_tmdb + '&language=en-US&page=1')
@@ -59,12 +81,12 @@ def main():
 			#print(r['Source'] + ': ' + r['Value'] + ', ', end='')
 
 		opening_earnings = getOpeningEarnings(original_title)
-
+		print ('Adding movie...')
 		addMovie(mID, original_title, opening_earnings, rotten_tomatoes, imdb_score, metacritic)
 
 	#print('\n')
 	getMovies(5)
-	commitMovies()
+	#commitMovies()
 	closeCursor()
 
 getPlayingMovies()

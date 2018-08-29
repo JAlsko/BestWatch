@@ -18,9 +18,9 @@ cursor.execute('SET collation_connection = \"utf8_general_ci\";')
 def updateCredits(movie_id):
 	cursor.execute('SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = \"movie_' + str(movie_id) + '\" AND TABLE_SCHEMA = \"credits\";')
 	if (cursor.fetchone() != None):
-		cursor.execute('DROP TABLE credits.movie_' + str(movie_id) + ';')
+		#cursor.execute('DROP TABLE credits.movie_' + str(movie_id) + ';')
 		print ('Movie with ID ' + str(movie_id) + ' already has cast credits table')
-		#return
+		return
 	mCredReq_tmdb = requests.get('https://api.themoviedb.org/3/movie/' + str(movie_id) + '/credits?api_key=' + api_key_tmdb)
 	mCredRes_tmdb = mCredReq_tmdb.json()
 	#print (mCredRes_tmdb)
@@ -38,9 +38,9 @@ def updateCredits(movie_id):
 		metacritic_score = getPersonScore(actor['name'])
 		if (cursor.fetchone() == None):
 			if actor['profile_path'] == None:
-				cursor.execute('INSERT INTO movie_people (name, gender, profile_path, metacritic_score) VALUES (\"' + actor['name'] + '\", ' + str(actor['gender']) + ', NULL, ' + metacritic_score + ');')
+				cursor.execute('INSERT INTO movie_people (name, gender, profile_path, metacritic_score) VALUES (\"' + actor['name'] + '\", ' + str(actor['gender']) + ', NULL, ' + str(metacritic_score) + ');')
 			else:
-				cursor.execute('INSERT INTO movie_people (name, gender, profile_path, metacritic_score) VALUES (\"' + actor['name'] + '\", ' + str(actor['gender']) + ', \"' + actor['profile_path'] + '\", ' + metacritic_score + ');')
+				cursor.execute('INSERT INTO movie_people (name, gender, profile_path, metacritic_score) VALUES (\"' + actor['name'] + '\", ' + str(actor['gender']) + ', \"' + actor['profile_path'] + '\", ' + str(metacritic_score) + ');')
 			db.commit()
 		else:
 			cursor.execute('UPDATE movie_people SET metacritic_score = ' + str(metacritic_score) + ' WHERE name = \"' + actor['name'] + '\";')

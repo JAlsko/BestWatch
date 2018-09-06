@@ -12,7 +12,7 @@ db = mysql.connector.connect(
 	database="movies_db" 
 ) 
 
-cursor = db.cursor()
+cursor = db.cursor(buffered=True)
 cursor.execute('SET collation_connection = \"utf8_general_ci\";')
 
 def updateCredits(movie_id):

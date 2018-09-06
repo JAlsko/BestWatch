@@ -3,6 +3,7 @@ from sql_updater import *
 from box_office_scraper import *
 from movie_utils import *
 from credits_updater import *
+from movie_picker import *
 import config
 
 api_key_tmdb = config.api_key_tmdb
@@ -12,6 +13,7 @@ def getPlayingMovies(language='en'):
 	nowPlayingReq_tmdb = requests.get('https://api.themoviedb.org/3/movie/now_playing?api_key=' + api_key_tmdb + '&language=en-US&page=1')
 	nowPlayingRes_tmdb = nowPlayingReq_tmdb.json()['results']
 	moviesList = []
+	clearMovies()
 	for m in nowPlayingRes_tmdb[:]:
 		mID = m['id']
 		mReq_tmdb = requests.get('https://api.themoviedb.org/3/movie/' + str(mID) + '?api_key=' + api_key_tmdb + '&language=en-US')
@@ -42,6 +44,7 @@ def getPlayingMovies(language='en'):
 
 		opening_earnings = getOpeningEarnings(original_title)
 		addMovie(mID, original_title, opening_earnings, rotten_tomatoes, imdb_score, metacritic)
+	updateBestMovies()
 
 def main():
 	nowPlayingReq_tmdb = requests.get('https://api.themoviedb.org/3/movie/now_playing?api_key=' + api_key_tmdb + '&language=en-US&page=1')

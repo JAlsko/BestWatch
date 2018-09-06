@@ -5,7 +5,7 @@ import sys
 import re
 
 def getOpeningEarnings(movie_title):
-	adjustedTitle = movie_title.replace('-', ' ')
+	adjustedTitle = movie_title.replace('-', ' ').replace("'", "\'")
 	adjustedTitle = re.sub(r'[^\w\s]','',adjustedTitle).replace(' ', '%20').lower()
 	search_url = 'https://www.boxofficemojo.com/search/?q=' + adjustedTitle + '&sort=date&sortrev=0&showpage=1&p=.htm'
 	search_html = urlopen(search_url).read()
